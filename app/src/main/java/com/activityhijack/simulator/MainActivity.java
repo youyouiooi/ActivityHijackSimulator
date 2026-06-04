@@ -20,6 +20,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import androidx.appcompat.app.AlertDialog;
+
 import com.activityhijack.simulator.dialogs.AppListDialog;
 import com.activityhijack.simulator.models.AppInfo;
 import com.activityhijack.simulator.services.ActivityMonitorService;
@@ -178,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         // 检查使用统计权限
         if (!ActivityMonitorService.hasUsageStatsPermission(this)) {
             appendLog("需要使用统计权限");
-            requestUsageStatsPermission();
+            showUsageAccessGuideDialog();
         }
 
         // 检查通知权限（Android 13+）
@@ -205,8 +207,39 @@ public class MainActivity extends AppCompatActivity {
      * 请求使用统计权限
      */
     private void requestUsageStatsPermission() {
-        Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-        startActivityForResult(intent, REQUEST_USAGE_STATS_PERMISSION);
+        try {
+            Intent intent;
+            // Android 10+ 尝试直接跳转到该应用的使用权限详情页
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS,
+                    Uri.parse("package:" + getPackageName()));
+            } else {
+                intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            }
+            startActivityForResult(intent, REQUEST_USAGE_STATS_PERMISSION);
+        } catch (Exception e) {
+            // 如果跳转失败，使用通用页面
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivityForResult(intent, REQUEST_USAGE_STATS_PERMISSION);
+        }
+    }
+
+    /**
+     * 显示使用情况访问权限引导对话框
+     */
+    private void showUsageAccessGuideDialog() {
+        new AlertDialog.Builder(this)
+            .setTitle("需要使用情况访问权限")
+            .setMessage("为了监测应用启动，需要授予"使用情况访问权限"。\n\n" +
+                "请在设置页面中：\n" +
+                "1. 找到「Activity劫持模拟器」\n" +
+                "2. 开启开关\n\n" +
+                "如果找不到应用，请向下滚动列表查找。")
+            .setPositiveButton("前往设置", (dialog, which) -> {
+                requestUsageStatsPermission();
+            })
+            .setNegativeButton("取消", null)
+            .show();
     }
 
     /**
@@ -256,8 +289,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (!ActivityMonitorService.hasUsageStatsPermission(this)) {
-            Toast.makeText(this, "需要使用统计权限", Toast.LENGTH_SHORT).show();
-            requestUsageStatsPermission();
+            showUsageAccessGuideDialog();
             return;
         }
 
