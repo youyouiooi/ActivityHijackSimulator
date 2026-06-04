@@ -9,6 +9,7 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -107,7 +108,12 @@ public class ActivityMonitorService extends Service {
         if (isMonitoring) return;
 
         isMonitoring = true;
-        startForeground(NOTIFICATION_ID, createNotification());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(NOTIFICATION_ID, createNotification(),
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE);
+        } else {
+            startForeground(NOTIFICATION_ID, createNotification());
+        }
 
         checkRunnable = new Runnable() {
             @Override
