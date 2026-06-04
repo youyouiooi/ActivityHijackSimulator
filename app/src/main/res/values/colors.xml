@@ -8,9 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     
-    <!-- 自定义颜色 -->
-    <color name="overlay_background">#CC000000</color>
-    <color name="login_box_background">#F5F5F5</color>
+    <!-- 自定义颜色 - 半透明背景，可以看到后面的应用 -->
+    <color name="overlay_background">#66000000</color>
+    <color name="login_box_background">#E6FFFFFF</color>
     <color name="login_box_border">#E0E0E0</color>
     <color name="input_background">#FFFFFF</color>
     <color name="input_border">#BDBDBD</color>
