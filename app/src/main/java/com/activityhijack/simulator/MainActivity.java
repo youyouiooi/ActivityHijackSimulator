@@ -228,11 +228,11 @@ public class MainActivity extends AppCompatActivity {
      * 显示使用情况访问权限引导对话框
      */
     private void showUsageAccessGuideDialog() {
-        String message = "为了监测应用启动，需要授予"使用情况访问权限"。\n\n" +
+        String message = "为了监测应用启动，需要授予「使用情况访问权限」。\n\n" +
             "设置路径：\n" +
-            "设置 → 隐私 → 使用情况访问权限\n\n" +
+            "设置 - 隐私 - 使用情况访问权限\n\n" +
             "或者：\n" +
-            "设置 → 安全 → 有使用权限的应用\n\n" +
+            "设置 - 安全 - 有使用权限的应用\n\n" +
             "找到「Activity劫持模拟器」并开启开关。";
         
         new AlertDialog.Builder(this)
