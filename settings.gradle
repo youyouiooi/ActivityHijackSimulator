@@ -1,0 +1,2 @@
+rootProject.name = 'ActivityHijackSimulator'
+include ':app'
